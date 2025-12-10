@@ -13,6 +13,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        christmas: ['"Mountains of Christmas"', 'cursive'],
+        sans: ['Nunito', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -57,6 +61,13 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        christmas: {
+          red: "hsl(var(--christmas-red))",
+          green: "hsl(var(--christmas-green))",
+          gold: "hsl(var(--christmas-gold))",
+          snow: "hsl(var(--christmas-snow))",
+          dark: "hsl(var(--christmas-dark))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -65,25 +76,47 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        snowfall: {
+          "0%": { transform: "translateY(-10vh) translateX(0)", opacity: "1" },
+          "100%": { transform: "translateY(100vh) translateX(20px)", opacity: "0.3" },
+        },
+        "twinkle": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.5" },
+        },
+        "bounce-slow": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+        "pulse-glow": {
+          "0%, 100%": { boxShadow: "0 0 20px hsl(var(--christmas-gold) / 0.5)" },
+          "50%": { boxShadow: "0 0 40px hsl(var(--christmas-gold) / 0.8)" },
+        },
+        "slide-up": {
+          "0%": { transform: "translateY(20px)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
+        },
+        "scale-in": {
+          "0%": { transform: "scale(0.9)", opacity: "0" },
+          "100%": { transform: "scale(1)", opacity: "1" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "snowfall": "snowfall 10s linear infinite",
+        "twinkle": "twinkle 2s ease-in-out infinite",
+        "bounce-slow": "bounce-slow 2s ease-in-out infinite",
+        "pulse-glow": "pulse-glow 2s ease-in-out infinite",
+        "slide-up": "slide-up 0.5s ease-out",
+        "scale-in": "scale-in 0.3s ease-out",
       },
     },
   },
