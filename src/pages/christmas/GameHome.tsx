@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ChristmasLayout } from "@/components/christmas/ChristmasLayout";
 import { Gift, Sparkles, TreePine, Trophy } from "lucide-react";
+import aecLogo from "@/assets/aec-logo.png";
 
 const GameHome = () => {
   const navigate = useNavigate();
@@ -12,13 +13,11 @@ const GameHome = () => {
         <div className="text-center space-y-8 max-w-2xl mx-auto animate-scale-in">
           {/* Title */}
           <div className="space-y-4">
-            <div className="flex justify-center gap-4 mb-4">
-              <TreePine className="w-12 h-12 text-christmas-green animate-bounce-slow" />
-              <Sparkles className="w-10 h-10 text-christmas-gold animate-twinkle" />
-              <TreePine className="w-12 h-12 text-christmas-green animate-bounce-slow" style={{ animationDelay: "0.5s" }} />
+            <div className="flex justify-center items-center gap-4 mb-4">
+              <img src={aecLogo} alt="AeC Logo" className="h-16 md:h-20" />
             </div>
             <h1 className="text-5xl md:text-7xl font-christmas text-white text-christmas-shadow">
-              🎄 Escape Room
+              🎄 Escape AeC
             </h1>
             <h2 className="text-3xl md:text-4xl font-christmas text-christmas-gold text-christmas-shadow">
               O Mistério da Oficina do Papai Noel
