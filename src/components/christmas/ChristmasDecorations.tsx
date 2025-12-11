@@ -1,8 +1,9 @@
+import { forwardRef } from "react";
 import { Gift, Star, TreePine } from "lucide-react";
 
-export const ChristmasDecorations = () => {
+export const ChristmasDecorations = forwardRef<HTMLDivElement>((_, ref) => {
   return (
-    <>
+    <div ref={ref}>
       {/* Floating decorations */}
       <div className="fixed top-20 left-10 text-christmas-gold animate-bounce-slow opacity-60 z-0">
         <Star className="w-8 h-8 fill-current" />
@@ -19,6 +20,8 @@ export const ChristmasDecorations = () => {
       <div className="fixed top-1/3 right-8 text-christmas-gold animate-twinkle opacity-40 z-0" style={{ animationDelay: "1.5s" }}>
         <Star className="w-4 h-4 fill-current" />
       </div>
-    </>
+    </div>
   );
-};
+});
+
+ChristmasDecorations.displayName = "ChristmasDecorations";
