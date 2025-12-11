@@ -107,6 +107,25 @@ export default {
           "0%": { transform: "scale(0.9)", opacity: "0" },
           "100%": { transform: "scale(1)", opacity: "1" },
         },
+        "fly-across": {
+          "0%": { 
+            transform: "translateX(100vw) translateY(0) rotate(-5deg)",
+            opacity: "0"
+          },
+          "10%": {
+            opacity: "1"
+          },
+          "50%": { 
+            transform: "translateX(0vw) translateY(-20px) rotate(0deg)",
+          },
+          "90%": {
+            opacity: "1"
+          },
+          "100%": { 
+            transform: "translateX(-100vw) translateY(0) rotate(5deg)",
+            opacity: "0"
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -117,6 +136,7 @@ export default {
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
         "slide-up": "slide-up 0.5s ease-out",
         "scale-in": "scale-in 0.3s ease-out",
+        "fly-across": "fly-across 12s ease-in-out infinite",
       },
     },
   },

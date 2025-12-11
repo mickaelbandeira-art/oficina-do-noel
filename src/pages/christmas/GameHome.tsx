@@ -1,14 +1,24 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ChristmasLayout } from "@/components/christmas/ChristmasLayout";
-import { Gift, Sparkles, TreePine, Trophy } from "lucide-react";
+import { Gift, Sparkles, Trophy } from "lucide-react";
 import aecLogo from "@/assets/aec-logo.png";
+import sleighImage from "@/assets/sleigh-flying.png";
 
 const GameHome = () => {
   const navigate = useNavigate();
 
   return (
     <ChristmasLayout>
+      {/* Flying Sleigh */}
+      <div className="fixed top-16 md:top-24 left-0 w-full pointer-events-none z-0 overflow-hidden">
+        <img 
+          src={sleighImage} 
+          alt="Trenó do Papai Noel" 
+          className="h-20 md:h-32 lg:h-40 animate-fly-across"
+        />
+      </div>
+      
       <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8">
         <div className="text-center space-y-8 max-w-2xl mx-auto animate-scale-in">
           {/* Title */}
