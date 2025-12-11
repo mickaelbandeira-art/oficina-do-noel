@@ -25,7 +25,7 @@ const GameHome = () => {
           </div>
 
           {/* Story */}
-          <div className="glass-card rounded-2xl p-6 md:p-8 space-y-4 text-white/90">
+          <div className="glass-card rounded-2xl p-6 md:p-8 space-y-4 text-christmas-red">
             <Gift className="w-16 h-16 mx-auto text-christmas-red animate-pulse-glow" />
             <p className="text-lg md:text-xl leading-relaxed">
               Os duendes da oficina do Papai Noel precisam da sua ajuda! 
