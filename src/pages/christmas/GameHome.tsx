@@ -15,7 +15,7 @@ const GameHome = () => {
         <img 
           src={sleighImage} 
           alt="Trenó do Papai Noel" 
-          className="h-20 md:h-32 lg:h-40 animate-fly-across"
+          className="h-28 md:h-44 lg:h-56 animate-fly-across"
         />
       </div>
       
@@ -71,6 +71,9 @@ const GameHome = () => {
           {/* Footer */}
           <p className="text-white/60 text-sm">
             🎅 Boa sorte e Feliz Natal! 🎅
+          </p>
+          <p className="text-white/40 text-xs mt-2">
+            Desenvolvido por Mickael Bandeira | Analista de Conteúdo
           </p>
         </div>
       </div>
