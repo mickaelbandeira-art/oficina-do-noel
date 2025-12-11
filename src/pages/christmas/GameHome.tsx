@@ -27,7 +27,8 @@ const GameHome = () => {
               <img 
                 src={quizNatalinoLogo} 
                 alt="Quiz Natalino AeC" 
-                className="w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl h-auto drop-shadow-2xl"
+                className="w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl h-auto drop-shadow-2xl animate-logo-entrance"
+                style={{ animationDelay: '0.2s', opacity: 0 }}
               />
             </div>
             <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-christmas text-christmas-gold text-christmas-shadow px-2">

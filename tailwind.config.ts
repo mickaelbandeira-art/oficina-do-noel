@@ -126,6 +126,37 @@ export default {
             opacity: "0"
           },
         },
+        "logo-entrance": {
+          "0%": { 
+            transform: "scale(0.3) rotate(-10deg)", 
+            opacity: "0",
+            filter: "blur(10px)"
+          },
+          "50%": { 
+            transform: "scale(1.1) rotate(2deg)", 
+            opacity: "1",
+            filter: "blur(0)"
+          },
+          "70%": { 
+            transform: "scale(0.95) rotate(-1deg)", 
+          },
+          "85%": { 
+            transform: "scale(1.02) rotate(0deg)", 
+          },
+          "100%": { 
+            transform: "scale(1) rotate(0deg)", 
+            opacity: "1",
+            filter: "blur(0)"
+          },
+        },
+        "logo-glow": {
+          "0%, 100%": { 
+            filter: "drop-shadow(0 0 20px hsl(var(--christmas-gold) / 0.5))"
+          },
+          "50%": { 
+            filter: "drop-shadow(0 0 40px hsl(var(--christmas-gold) / 0.8))"
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -137,6 +168,8 @@ export default {
         "slide-up": "slide-up 0.5s ease-out",
         "scale-in": "scale-in 0.3s ease-out",
         "fly-across": "fly-across 12s ease-in-out infinite",
+        "logo-entrance": "logo-entrance 1s ease-out forwards",
+        "logo-glow": "logo-glow 3s ease-in-out infinite",
       },
     },
   },
