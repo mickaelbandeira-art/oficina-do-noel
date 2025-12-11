@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ChristmasLayout } from "@/components/christmas/ChristmasLayout";
+import { FeedbackOverlay } from "@/components/christmas/FeedbackOverlay";
 import { useChristmasGame, Question } from "@/hooks/useChristmasGame";
 import { useToast } from "@/hooks/use-toast";
 import { Clock, CheckCircle2, XCircle } from "lucide-react";
@@ -21,6 +22,7 @@ const GameQuiz = () => {
   const [startTime] = useState(Date.now());
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [lastAnswerCorrect, setLastAnswerCorrect] = useState(false);
 
   // Get player from session
   const player = JSON.parse(sessionStorage.getItem("christmasPlayer") || "null");
@@ -62,6 +64,7 @@ const GameQuiz = () => {
 
     setAnswers(newAnswers);
     setScore(newScore);
+    setLastAnswerCorrect(isCorrect);
     setShowResult(true);
 
     // Wait for animation
@@ -133,6 +136,9 @@ const GameQuiz = () => {
 
   return (
     <ChristmasLayout showDecorations={false}>
+      {/* Feedback Overlay */}
+      <FeedbackOverlay isVisible={showResult} isCorrect={lastAnswerCorrect} />
+
       <div className="min-h-screen flex flex-col px-4 py-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6 text-white">
@@ -216,18 +222,6 @@ const GameQuiz = () => {
               >
                 {isLastQuestion ? "Finalizar Quiz" : "Confirmar Resposta"}
               </Button>
-            )}
-
-            {showResult && (
-              <div className="mt-6 text-center">
-                <p className="text-lg font-semibold">
-                  {selectedAnswer === currentQuestion?.correct_answer ? (
-                    <span className="text-green-600">✅ Resposta Correta!</span>
-                  ) : (
-                    <span className="text-red-600">❌ Resposta Incorreta</span>
-                  )}
-                </p>
-              </div>
             )}
           </div>
         </div>
