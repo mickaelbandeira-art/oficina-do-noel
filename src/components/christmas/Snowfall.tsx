@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, forwardRef } from "react";
 
 interface Snowflake {
   id: number;
@@ -9,7 +9,7 @@ interface Snowflake {
   opacity: number;
 }
 
-export const Snowfall = () => {
+export const Snowfall = forwardRef<HTMLDivElement>((_, ref) => {
   const [snowflakes, setSnowflakes] = useState<Snowflake[]>([]);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export const Snowfall = () => {
   }, []);
 
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <div ref={ref} className="fixed inset-0 pointer-events-none overflow-hidden z-0">
       {snowflakes.map((flake) => (
         <div
           key={flake.id}
@@ -42,4 +42,6 @@ export const Snowfall = () => {
       ))}
     </div>
   );
-};
+});
+
+Snowfall.displayName = "Snowfall";

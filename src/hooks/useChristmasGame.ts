@@ -112,11 +112,23 @@ export const useChristmasGame = () => {
     return data as Player[];
   };
 
+  const loginPlayer = async (matricula: string) => {
+    const { data, error } = await supabase
+      .from("christmas_players")
+      .select("*")
+      .eq("matricula", matricula)
+      .maybeSingle();
+
+    if (error) throw error;
+    return data as Player | null;
+  };
+
   return {
     questions,
     loading,
     error,
     registerPlayer,
+    loginPlayer,
     submitGame,
     getRanking,
     refreshQuestions: fetchQuestions,
