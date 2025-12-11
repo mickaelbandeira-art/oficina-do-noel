@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ChristmasLayout } from "@/components/christmas/ChristmasLayout";
 import { Gift, Sparkles, Trophy } from "lucide-react";
-import aecLogo from "@/assets/aec-logo.png";
+import quizNatalinoLogo from "@/assets/quiz-natalino-logo.png";
 import sleighImage from "@/assets/sleigh-flying.png";
 
 const GameHome = () => {
@@ -21,16 +21,17 @@ const GameHome = () => {
       
       <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8">
         <div className="text-center space-y-8 max-w-2xl mx-auto animate-scale-in">
-          {/* Title */}
-          <div className="space-y-4">
-            <div className="flex justify-center items-center gap-4 mb-4">
-              <img src={aecLogo} alt="AeC Logo" className="h-16 md:h-20" />
+          {/* Logo Principal */}
+          <div className="space-y-6">
+            <div className="flex justify-center items-center">
+              <img 
+                src={quizNatalinoLogo} 
+                alt="Quiz Natalino AeC" 
+                className="w-full max-w-md md:max-w-lg lg:max-w-xl h-auto drop-shadow-2xl"
+              />
             </div>
-            <h1 className="text-5xl md:text-7xl font-christmas text-white text-christmas-shadow">
-              🎄 Escape AeC
-            </h1>
-            <h2 className="text-3xl md:text-4xl font-christmas text-christmas-gold text-christmas-shadow">
-              O Mistério da Oficina do Papai Noel
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-christmas text-christmas-gold text-christmas-shadow">
+              Chegou a hora de provar quem é o verdadeiro especialista do Natal!
             </h2>
           </div>
 
