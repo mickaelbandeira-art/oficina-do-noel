@@ -35,10 +35,10 @@ const GameQuiz = () => {
 
   // Load AI questions on mount
   useEffect(() => {
-    if (player && fetchAIQuestions) {
+    if (player?.id && fetchAIQuestions) {
       fetchAIQuestions();
     }
-  }, [player, fetchAIQuestions]);
+  }, [player?.id, fetchAIQuestions]);
 
   // Timer
   useEffect(() => {
