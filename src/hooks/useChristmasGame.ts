@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { generateQuizQuestions } from "@/services/groqService";
 
 export interface Question {
   id: string;
@@ -34,6 +35,7 @@ export const useChristmasGame = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isUsingAI, setIsUsingAI] = useState(false);
 
   const fetchQuestions = useCallback(async () => {
     try {
@@ -46,8 +48,43 @@ export const useChristmasGame = () => {
 
       if (error) throw error;
       setQuestions(data || []);
+      setIsUsingAI(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro ao carregar perguntas");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchAIQuestions = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      console.log("Gerando perguntas com IA...");
+      const aiQuestions = await generateQuizQuestions();
+
+      setQuestions(aiQuestions);
+      setIsUsingAI(true);
+      console.log("Perguntas geradas com sucesso!");
+    } catch (err) {
+      console.error("Erro ao gerar perguntas com IA, usando banco de dados:", err);
+      setError("Usando perguntas do banco de dados");
+
+      // Fallback para perguntas do banco
+      try {
+        const { data, error: dbError } = await supabase
+          .from("christmas_questions")
+          .select("*")
+          .eq("is_active", true)
+          .order("order_index", { ascending: true });
+
+        if (dbError) throw dbError;
+        setQuestions(data || []);
+        setIsUsingAI(false);
+      } catch (dbErr) {
+        setError(dbErr instanceof Error ? dbErr.message : "Erro ao carregar perguntas");
+      }
     } finally {
       setLoading(false);
     }
@@ -127,10 +164,12 @@ export const useChristmasGame = () => {
     questions,
     loading,
     error,
+    isUsingAI,
     registerPlayer,
     loginPlayer,
     submitGame,
     getRanking,
     refreshQuestions: fetchQuestions,
+    fetchAIQuestions,
   };
 };

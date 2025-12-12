@@ -12,8 +12,8 @@ import { cn } from "@/lib/utils";
 const GameQuiz = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { questions, loading, error, submitGame } = useChristmasGame();
-  
+  const { questions, loading, error, isUsingAI, submitGame, fetchAIQuestions } = useChristmasGame();
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -32,6 +32,13 @@ const GameQuiz = () => {
       navigate("/christmas/register");
     }
   }, [player, navigate]);
+
+  // Load AI questions on mount
+  useEffect(() => {
+    if (player && fetchAIQuestions) {
+      fetchAIQuestions();
+    }
+  }, [player, fetchAIQuestions]);
 
   // Timer
   useEffect(() => {
@@ -76,13 +83,13 @@ const GameQuiz = () => {
         setIsSubmitting(true);
         const totalTime = Math.floor((Date.now() - startTime) / 1000);
         await submitGame(player.id, newScore, totalTime, newAnswers);
-        
+
         sessionStorage.setItem("christmasResult", JSON.stringify({
           score: newScore,
           totalQuestions: questions.length,
           totalTime,
         }));
-        
+
         navigate("/christmas/result");
       } catch (err) {
         toast({
@@ -105,7 +112,8 @@ const GameQuiz = () => {
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center text-white">
             <div className="animate-spin w-12 h-12 border-4 border-christmas-gold border-t-transparent rounded-full mx-auto mb-4" />
-            <p className="text-xl">Carregando perguntas...</p>
+            <p className="text-xl">Gerando perguntas exclusivas para você...</p>
+            <p className="text-sm text-white/70 mt-2">Powered by AI 🤖</p>
           </div>
         </div>
       </ChristmasLayout>
@@ -146,14 +154,21 @@ const GameQuiz = () => {
             <Clock className="w-5 h-5" />
             <span className="font-mono text-lg">{formatTime(elapsedTime)}</span>
           </div>
-          <div className="text-lg font-semibold">
-            {currentIndex + 1} / {questions.length}
+          <div className="flex items-center gap-3">
+            {isUsingAI && (
+              <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold px-3 py-1 rounded-full animate-pulse">
+                🤖 IA
+              </span>
+            )}
+            <div className="text-lg font-semibold">
+              {currentIndex + 1} / {questions.length}
+            </div>
           </div>
         </div>
 
         {/* Progress */}
-        <Progress 
-          value={((currentIndex + 1) / questions.length) * 100} 
+        <Progress
+          value={((currentIndex + 1) / questions.length) * 100}
           className="mb-8 h-3 bg-white/20"
         />
 
@@ -169,9 +184,9 @@ const GameQuiz = () => {
               {options.map((option) => {
                 const isSelected = selectedAnswer === option.key;
                 const isCorrect = option.key === currentQuestion?.correct_answer;
-                
+
                 let buttonClass = "w-full p-4 text-left rounded-xl border-2 transition-all duration-300 ";
-                
+
                 if (showResult) {
                   if (isCorrect) {
                     buttonClass += "border-green-500 bg-green-500/20 text-green-700";
