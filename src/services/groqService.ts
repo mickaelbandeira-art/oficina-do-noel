@@ -64,7 +64,7 @@ export const generateQuizQuestions = async (): Promise<Question[]> => {
         Authorization: `Bearer ${GROQ_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
+        model: "llama3-70b-8192",
         messages,
         temperature: 1.2,
         max_tokens: 2048,
