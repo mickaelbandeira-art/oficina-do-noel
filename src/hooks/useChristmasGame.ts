@@ -82,7 +82,8 @@ export const useChristmasGame = () => {
       console.log("Perguntas geradas com sucesso!");
     } catch (err) {
       console.error("Erro ao gerar perguntas com IA, usando banco de dados:", err);
-      setError("Usando perguntas do banco de dados");
+      // setError(null); // Ensure error is clear for fallback
+
 
       // Fallback para perguntas do banco
       try {
