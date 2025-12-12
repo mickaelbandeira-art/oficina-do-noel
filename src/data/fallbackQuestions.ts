@@ -191,7 +191,7 @@ export const FALLBACK_QUESTIONS = [
     },
     {
         id: "fb20",
-        question: "Quantas renas originais puxam o trenó (sem Rudolph)?",
+        question: "Quantas renas puxam o trenó do Papai Noel?",
         option_a: "6",
         option_b: "8",
         option_c: "9",
