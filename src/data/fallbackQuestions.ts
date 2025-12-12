@@ -196,7 +196,7 @@ export const FALLBACK_QUESTIONS = [
         option_b: "8",
         option_c: "9",
         option_d: "10",
-        correct_answer: "B",
+        correct_answer: "C",
         order_index: 0
     },
     {

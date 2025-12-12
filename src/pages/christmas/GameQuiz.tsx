@@ -90,6 +90,8 @@ const GameQuiz = () => {
           score: newScore,
           totalQuestions: questions.length,
           totalTime,
+          questions, // Save full questions array
+          answers: newAnswers, // Save user answers
         }));
 
         navigate("/christmas/result");
