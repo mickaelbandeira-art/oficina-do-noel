@@ -171,7 +171,7 @@ export const useChristmasGame = () => {
   const getRanking = async () => {
     const { data, error } = await supabase
       .from("christmas_players")
-      .select("id, name, email, matricula, score, total_time_seconds, completed_at, quiz_attempts")
+      .select("*")
       .not("completed_at", "is", null)
       .order("score", { ascending: false })
       .order("total_time_seconds", { ascending: true });
@@ -183,7 +183,7 @@ export const useChristmasGame = () => {
   const loginPlayer = async (matricula: string) => {
     const { data, error } = await supabase
       .from("christmas_players")
-      .select("id, name, email, matricula, score, total_time_seconds, completed_at, quiz_attempts")
+      .select("*")
       .eq("matricula", matricula)
       .maybeSingle();
 
