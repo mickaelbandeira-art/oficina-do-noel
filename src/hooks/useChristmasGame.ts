@@ -36,6 +36,15 @@ export interface GameState {
   isComplete: boolean;
 }
 
+const shuffleArray = <T>(array: T[]): T[] => {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+};
+
 export const useChristmasGame = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,21 +57,20 @@ export const useChristmasGame = () => {
       const { data, error } = await supabase
         .from("christmas_questions")
         .select("*")
-        .eq("is_active", true)
-        .order("order_index", { ascending: true });
+        .eq("is_active", true);
 
       if (error) throw error;
 
       if (!data || data.length === 0) {
         console.warn("Nenhuma pergunta no banco (fetchQuestions). Usando fallback estático.");
-        setQuestions(FALLBACK_QUESTIONS);
+        setQuestions(shuffleArray(FALLBACK_QUESTIONS).slice(0, 10));
       } else {
-        setQuestions(data);
+        setQuestions(shuffleArray(data).slice(0, 10));
       }
       setIsUsingAI(false);
     } catch (err) {
       console.error("Erro no fetchQuestions, usando fallback:", err);
-      setQuestions(FALLBACK_QUESTIONS);
+      setQuestions(shuffleArray(FALLBACK_QUESTIONS).slice(0, 10));
       // setError(err instanceof Error ? err.message : "Erro ao carregar perguntas");
     } finally {
       setLoading(false);
@@ -90,21 +98,20 @@ export const useChristmasGame = () => {
         const { data, error: dbError } = await supabase
           .from("christmas_questions")
           .select("*")
-          .eq("is_active", true)
-          .order("order_index", { ascending: true });
+          .eq("is_active", true);
 
         if (dbError) throw dbError;
 
         if (!data || data.length === 0) {
           console.warn("Nenhuma pergunta no banco. Usando fallback estático.");
-          setQuestions(FALLBACK_QUESTIONS);
+          setQuestions(shuffleArray(FALLBACK_QUESTIONS).slice(0, 10));
         } else {
-          setQuestions(data);
+          setQuestions(shuffleArray(data).slice(0, 10));
         }
         setIsUsingAI(false);
       } catch (dbErr) {
         console.error("Erro no banco, usando fallback final:", dbErr);
-        setQuestions(FALLBACK_QUESTIONS);
+        setQuestions(shuffleArray(FALLBACK_QUESTIONS).slice(0, 10));
         setIsUsingAI(false);
         // Não setar erro para o usuário se o fallback funcionar
         // setError(dbErr instanceof Error ? dbErr.message : "Erro ao carregar perguntas");
