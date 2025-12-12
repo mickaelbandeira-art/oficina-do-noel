@@ -1,6 +1,8 @@
+
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { generateQuizQuestions } from "@/services/groqService";
+import { FALLBACK_QUESTIONS } from "@/data/fallbackQuestions";
 
 export const MAX_ATTEMPTS = 4;
 
@@ -50,10 +52,18 @@ export const useChristmasGame = () => {
         .order("order_index", { ascending: true });
 
       if (error) throw error;
-      setQuestions(data || []);
+
+      if (!data || data.length === 0) {
+        console.warn("Nenhuma pergunta no banco (fetchQuestions). Usando fallback estático.");
+        setQuestions(FALLBACK_QUESTIONS);
+      } else {
+        setQuestions(data);
+      }
       setIsUsingAI(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro ao carregar perguntas");
+      console.error("Erro no fetchQuestions, usando fallback:", err);
+      setQuestions(FALLBACK_QUESTIONS);
+      // setError(err instanceof Error ? err.message : "Erro ao carregar perguntas");
     } finally {
       setLoading(false);
     }
@@ -83,10 +93,20 @@ export const useChristmasGame = () => {
           .order("order_index", { ascending: true });
 
         if (dbError) throw dbError;
-        setQuestions(data || []);
+
+        if (!data || data.length === 0) {
+          console.warn("Nenhuma pergunta no banco. Usando fallback estático.");
+          setQuestions(FALLBACK_QUESTIONS);
+        } else {
+          setQuestions(data);
+        }
         setIsUsingAI(false);
       } catch (dbErr) {
-        setError(dbErr instanceof Error ? dbErr.message : "Erro ao carregar perguntas");
+        console.error("Erro no banco, usando fallback final:", dbErr);
+        setQuestions(FALLBACK_QUESTIONS);
+        setIsUsingAI(false);
+        // Não setar erro para o usuário se o fallback funcionar
+        // setError(dbErr instanceof Error ? dbErr.message : "Erro ao carregar perguntas");
       }
     } finally {
       setLoading(false);
@@ -133,8 +153,9 @@ export const useChristmasGame = () => {
 
     if (fetchError) throw fetchError;
 
-    const currentAttempts = currentPlayer.quiz_attempts || 0;
-    const currentBestScore = currentPlayer.score || 0;
+    const player = currentPlayer as unknown as Player;
+    const currentAttempts = player.quiz_attempts || 0;
+    const currentBestScore = player.score || 0;
     const isFirstAttempt = currentAttempts === 0;
 
     // Update with best score and increment attempts
@@ -177,7 +198,7 @@ export const useChristmasGame = () => {
       .order("total_time_seconds", { ascending: true });
 
     if (error) throw error;
-    return data as Player[];
+    return data as unknown as Player[];
   };
 
   const loginPlayer = async (matricula: string) => {
@@ -188,7 +209,7 @@ export const useChristmasGame = () => {
       .maybeSingle();
 
     if (error) throw error;
-    return data as Player | null;
+    return data as unknown as Player | null;
   };
 
   return {
