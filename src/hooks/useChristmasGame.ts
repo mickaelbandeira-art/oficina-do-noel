@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { generateQuizQuestions } from "@/services/groqService";
 
+export const MAX_ATTEMPTS = 4;
+
 export interface Question {
   id: string;
   question: string;
@@ -21,6 +23,7 @@ export interface Player {
   score: number;
   total_time_seconds: number | null;
   completed_at: string | null;
+  quiz_attempts: number | null;
 }
 
 export interface GameState {
@@ -121,13 +124,28 @@ export const useChristmasGame = () => {
     totalTimeSeconds: number,
     answers: Record<number, string>
   ) => {
+    // Get current player data
+    const { data: currentPlayer, error: fetchError } = await supabase
+      .from("christmas_players")
+      .select("*")
+      .eq("id", playerId)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    const currentAttempts = currentPlayer.quiz_attempts || 0;
+    const currentBestScore = currentPlayer.score || 0;
+    const isFirstAttempt = currentAttempts === 0;
+
+    // Update with best score and increment attempts
     const { data, error } = await supabase
       .from("christmas_players")
       .update({
-        score,
-        total_time_seconds: totalTimeSeconds,
-        answers,
-        completed_at: new Date().toISOString(),
+        score: Math.max(score, currentBestScore), // Keep best score
+        total_time_seconds: score > currentBestScore ? totalTimeSeconds : currentPlayer.total_time_seconds,
+        answers: score > currentBestScore ? answers : currentPlayer.answers,
+        quiz_attempts: currentAttempts + 1,
+        completed_at: isFirstAttempt ? new Date().toISOString() : currentPlayer.completed_at,
       })
       .eq("id", playerId)
       .select()
@@ -137,10 +155,23 @@ export const useChristmasGame = () => {
     return data;
   };
 
-  const getRanking = async () => {
+  const resetPlayerForRetry = async (playerId: string) => {
+    // Just fetch current player data - no reset needed
+    // Each attempt will generate new questions via AI
     const { data, error } = await supabase
       .from("christmas_players")
       .select("*")
+      .eq("id", playerId)
+      .single();
+
+    if (error) throw error;
+    return data;
+  };
+
+  const getRanking = async () => {
+    const { data, error } = await supabase
+      .from("christmas_players")
+      .select("id, name, email, matricula, score, total_time_seconds, completed_at, quiz_attempts")
       .not("completed_at", "is", null)
       .order("score", { ascending: false })
       .order("total_time_seconds", { ascending: true });
@@ -152,7 +183,7 @@ export const useChristmasGame = () => {
   const loginPlayer = async (matricula: string) => {
     const { data, error } = await supabase
       .from("christmas_players")
-      .select("*")
+      .select("id, name, email, matricula, score, total_time_seconds, completed_at, quiz_attempts")
       .eq("matricula", matricula)
       .maybeSingle();
 
@@ -171,5 +202,6 @@ export const useChristmasGame = () => {
     getRanking,
     refreshQuestions: fetchQuestions,
     fetchAIQuestions,
+    resetPlayerForRetry,
   };
 };

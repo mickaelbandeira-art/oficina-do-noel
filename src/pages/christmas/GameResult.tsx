@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ChristmasLayout } from "@/components/christmas/ChristmasLayout";
-import { useChristmasGame, Player } from "@/hooks/useChristmasGame";
-import { Trophy, Home, Award, Clock } from "lucide-react";
+import { useChristmasGame, Player, MAX_ATTEMPTS } from "@/hooks/useChristmasGame";
+import { Trophy, Home, Award, Clock, RotateCcw } from "lucide-react";
+import { clearQuestionCache } from "@/services/groqService";
 
 const GameResult = () => {
   const navigate = useNavigate();
@@ -109,6 +110,20 @@ const GameResult = () => {
                 <Trophy className="mr-2 h-5 w-5" />
                 Ver Ranking Completo
               </Button>
+
+              {/* Play Again Button */}
+              {player && (player.quiz_attempts || (player.completed_at ? 1 : 0)) < MAX_ATTEMPTS && (
+                <Button
+                  onClick={() => {
+                    clearQuestionCache();
+                    navigate("/christmas/quiz");
+                  }}
+                  className="flex-1 bg-christmas-green hover:bg-christmas-green/90 text-white py-6"
+                >
+                  <RotateCcw className="mr-2 h-5 w-5" />
+                  Jogar Novamente
+                </Button>
+              )}
               <Button
                 onClick={() => {
                   sessionStorage.removeItem("christmasPlayer");

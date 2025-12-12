@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ChristmasLayout } from "@/components/christmas/ChristmasLayout";
-import { useChristmasGame, Player } from "@/hooks/useChristmasGame";
+import { useChristmasGame, Player, MAX_ATTEMPTS } from "@/hooks/useChristmasGame";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, UserPlus, Search, Trophy, Play } from "lucide-react";
+import { ArrowLeft, UserPlus, Search, Trophy, Play, RotateCcw } from "lucide-react";
+import { clearQuestionCache } from "@/services/groqService";
 
 const GameRegister = () => {
   const navigate = useNavigate();
@@ -34,15 +35,26 @@ const GameRegister = () => {
     try {
       setLoading(true);
       const player = await loginPlayer(formData.matricula.trim());
-      
+
       if (player) {
         setExistingPlayer(player);
         if (player.completed_at) {
-          // Player already completed the quiz
-          toast({
-            title: "Você já participou! 🎄",
-            description: "Confira seu resultado abaixo.",
-          });
+          const attempts = player.quiz_attempts || (player.completed_at ? 1 : 0);
+
+          if (attempts >= MAX_ATTEMPTS) {
+            // Player already completed all attempts
+            toast({
+              title: "Você já participou! 🎄",
+              description: "Confira seu resultado abaixo.",
+            });
+          } else {
+            // Can retry
+            const remaining = MAX_ATTEMPTS - attempts;
+            toast({
+              title: `Bem-vindo de volta, ${player.name}!`,
+              description: `Você tem ${remaining} tentativas restantes.`,
+            });
+          }
         } else {
           // Player started but didn't finish
           toast({
@@ -71,6 +83,7 @@ const GameRegister = () => {
 
   const handleContinueGame = () => {
     if (existingPlayer) {
+      clearQuestionCache(); // Clear cache to ensure fresh questions if retrying
       sessionStorage.setItem("christmasPlayer", JSON.stringify(existingPlayer));
       navigate("/christmas/quiz");
     }
@@ -78,7 +91,7 @@ const GameRegister = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.email || !formData.matricula) {
       toast({
         title: "Campos obrigatórios",
@@ -91,14 +104,14 @@ const GameRegister = () => {
     try {
       setLoading(true);
       const player = await registerPlayer(formData.name, formData.email, formData.matricula);
-      
+
       sessionStorage.setItem("christmasPlayer", JSON.stringify(player));
-      
+
       toast({
         title: "Bem-vindo(a)! 🎄",
         description: "Cadastro realizado com sucesso. Boa sorte!",
       });
-      
+
       navigate("/christmas/quiz");
     } catch (error) {
       toast({
@@ -139,40 +152,80 @@ const GameRegister = () => {
                 <h1 className="text-3xl font-christmas text-christmas-gold">
                   🎄 Olá, {existingPlayer.name}!
                 </h1>
-                <p className="text-muted-foreground">
-                  Você já participou do quiz natalino.
-                </p>
-                
-                <div className="bg-background/30 rounded-xl p-6 space-y-3">
-                  <div className="flex items-center justify-center gap-2 text-christmas-gold">
-                    <Trophy className="h-6 w-6" />
-                    <span className="text-2xl font-bold">Seu Resultado</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 text-center">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Pontuação</p>
-                      <p className="text-3xl font-bold text-christmas-green">
-                        {existingPlayer.score}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Tempo</p>
-                      <p className="text-3xl font-bold text-christmas-red">
-                        {existingPlayer.total_time_seconds 
-                          ? formatTime(existingPlayer.total_time_seconds) 
-                          : "--:--"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
 
-                <Button
-                  onClick={() => navigate("/christmas/ranking")}
-                  className="w-full bg-christmas-gold hover:bg-christmas-gold/90 text-christmas-dark py-6 text-lg rounded-xl"
-                >
-                  <Trophy className="mr-2 h-5 w-5" />
-                  Ver Ranking Completo
-                </Button>
+                {(existingPlayer.quiz_attempts || 0) >= MAX_ATTEMPTS ? (
+                  <>
+                    <p className="text-muted-foreground">
+                      Você já utilizou todas as suas {MAX_ATTEMPTS} tentativas.
+                    </p>
+
+                    <div className="bg-background/30 rounded-xl p-6 space-y-3">
+                      <div className="flex items-center justify-center gap-2 text-christmas-gold">
+                        <Trophy className="h-6 w-6" />
+                        <span className="text-2xl font-bold">Seu Melhor Resultado</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4 text-center">
+                        <div>
+                          <p className="text-sm text-muted-foreground">Pontuação</p>
+                          <p className="text-3xl font-bold text-christmas-green">
+                            {existingPlayer.score}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Tempo</p>
+                          <p className="text-3xl font-bold text-christmas-red">
+                            {existingPlayer.total_time_seconds
+                              ? formatTime(existingPlayer.total_time_seconds)
+                              : "--:--"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <Button
+                      onClick={() => navigate("/christmas/ranking")}
+                      className="w-full bg-christmas-gold hover:bg-christmas-gold/90 text-christmas-dark py-6 text-lg rounded-xl"
+                    >
+                      <Trophy className="mr-2 h-5 w-5" />
+                      Ver Ranking Completo
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-muted-foreground">
+                      Você já completou o quiz {existingPlayer.quiz_attempts || 1} vez(es).
+                      <br />
+                      Você ainda tem <span className="text-christmas-gold font-bold">{MAX_ATTEMPTS - (existingPlayer.quiz_attempts || 1)}</span> tentativas!
+                    </p>
+
+                    <div className="bg-background/30 rounded-xl p-4 space-y-2 mb-4">
+                      <p className="text-sm text-muted-foreground">Sua melhor pontuação até agora:</p>
+                      <div className="flex items-center justify-center gap-4">
+                        <span className="text-2xl font-bold text-christmas-green">{existingPlayer.score} pts</span>
+                        <span className="text-xl font-bold text-christmas-red">
+                          {existingPlayer.total_time_seconds ? formatTime(existingPlayer.total_time_seconds) : "--:--"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <Button
+                      onClick={handleContinueGame}
+                      className="w-full bg-christmas-green hover:bg-christmas-green/90 text-white py-6 text-lg rounded-xl"
+                    >
+                      <RotateCcw className="mr-2 h-5 w-5" />
+                      Jogar Novamente
+                    </Button>
+
+                    <Button
+                      onClick={() => navigate("/christmas/ranking")}
+                      variant="outline"
+                      className="w-full py-6 text-lg rounded-xl border-christmas-gold/20 hover:bg-christmas-gold/10"
+                    >
+                      <Trophy className="mr-2 h-5 w-5" />
+                      Ver Ranking
+                    </Button>
+                  </>
+                )}
               </div>
             ) : existingPlayer ? (
               /* Player exists but didn't complete */
@@ -184,7 +237,7 @@ const GameRegister = () => {
                 <p className="text-muted-foreground">
                   Você ainda não finalizou o quiz. Continue de onde parou!
                 </p>
-                
+
                 <Button
                   onClick={handleContinueGame}
                   className="w-full bg-christmas-green hover:bg-christmas-green/90 text-white py-6 text-lg rounded-xl"

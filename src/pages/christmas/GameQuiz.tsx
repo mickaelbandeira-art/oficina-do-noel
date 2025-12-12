@@ -82,7 +82,9 @@ const GameQuiz = () => {
       try {
         setIsSubmitting(true);
         const totalTime = Math.floor((Date.now() - startTime) / 1000);
-        await submitGame(player.id, newScore, totalTime, newAnswers);
+        const updatedPlayer = await submitGame(player.id, newScore, totalTime, newAnswers);
+
+        sessionStorage.setItem("christmasPlayer", JSON.stringify(updatedPlayer));
 
         sessionStorage.setItem("christmasResult", JSON.stringify({
           score: newScore,
