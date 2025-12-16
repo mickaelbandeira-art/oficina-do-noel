@@ -129,7 +129,7 @@ const GameRanking = () => {
                         index === 1 && "text-gray-500",
                         index === 2 && "text-amber-600"
                       )}>
-                        {player.score}/10
+                        {player.score}/15
                       </span>
                     </div>
                     <div className="col-span-3 text-center flex items-center justify-center gap-1 text-muted-foreground">

@@ -3,11 +3,11 @@ import { useNavigate, Link, Outlet, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  LayoutDashboard, 
-  FileQuestion, 
-  Users, 
-  Trophy, 
+import {
+  LayoutDashboard,
+  FileQuestion,
+  Users,
+  Trophy,
   LogOut,
   Menu,
   X
@@ -121,7 +121,7 @@ const AdminDashboard = () => {
           <div className="p-6 border-b hidden lg:block">
             <h1 className="text-2xl font-christmas text-christmas-red">🎄 Painel Admin</h1>
           </div>
-          
+
           <nav className="p-4 space-y-2">
             {menuItems.map((item) => (
               <Link
@@ -166,7 +166,7 @@ const AdminDashboard = () => {
           {isOverview ? (
             <>
               <h2 className="text-2xl font-bold mb-6">Dashboard</h2>
-              
+
               {/* Stats Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 <div className="bg-card rounded-xl p-6 border">
@@ -184,7 +184,7 @@ const AdminDashboard = () => {
                 <div className="bg-card rounded-xl p-6 border">
                   <p className="text-sm text-muted-foreground">Média de Acertos</p>
                   <p className="text-3xl font-bold text-christmas-gold mt-2">
-                    {loading ? "-" : `${stats.averageScore}/10`}
+                    {loading ? "-" : `${stats.averageScore}/15`}
                   </p>
                 </div>
                 <div className="bg-card rounded-xl p-6 border">

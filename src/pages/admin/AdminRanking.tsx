@@ -87,7 +87,7 @@ const AdminRanking = () => {
             <div className="bg-card rounded-xl p-4 border-2 border-gray-300">
               <Medal className="w-12 h-12 mx-auto text-gray-400 mb-2" />
               <p className="font-bold truncate max-w-[120px]">{ranking[1].name}</p>
-              <p className="text-sm text-muted-foreground">{ranking[1].score}/10</p>
+              <p className="text-sm text-muted-foreground">{ranking[1].score}/15</p>
               <p className="text-xs text-muted-foreground">{formatTime(ranking[1].total_time_seconds)}</p>
             </div>
             <div className="bg-gray-300 h-16 w-24 rounded-t-lg mt-2 flex items-center justify-center text-2xl font-bold text-white">
@@ -100,7 +100,7 @@ const AdminRanking = () => {
             <div className="bg-card rounded-xl p-6 border-2 border-yellow-400 shadow-lg">
               <Trophy className="w-16 h-16 mx-auto text-yellow-400 mb-2" />
               <p className="font-bold text-lg truncate max-w-[140px]">{ranking[0].name}</p>
-              <p className="text-christmas-gold font-bold">{ranking[0].score}/10</p>
+              <p className="text-christmas-gold font-bold">{ranking[0].score}/15</p>
               <p className="text-sm text-muted-foreground">{formatTime(ranking[0].total_time_seconds)}</p>
             </div>
             <div className="bg-yellow-400 h-24 w-28 rounded-t-lg mt-2 flex items-center justify-center text-3xl font-bold text-white">
@@ -113,7 +113,7 @@ const AdminRanking = () => {
             <div className="bg-card rounded-xl p-4 border-2 border-amber-600">
               <Medal className="w-12 h-12 mx-auto text-amber-600 mb-2" />
               <p className="font-bold truncate max-w-[120px]">{ranking[2].name}</p>
-              <p className="text-sm text-muted-foreground">{ranking[2].score}/10</p>
+              <p className="text-sm text-muted-foreground">{ranking[2].score}/15</p>
               <p className="text-xs text-muted-foreground">{formatTime(ranking[2].total_time_seconds)}</p>
             </div>
             <div className="bg-amber-600 h-12 w-24 rounded-t-lg mt-2 flex items-center justify-center text-2xl font-bold text-white">
@@ -172,9 +172,9 @@ const AdminRanking = () => {
                       <span className={cn(
                         "font-bold text-lg",
                         index === 0 && "text-christmas-gold",
-                        player.score === 10 && "text-christmas-green"
+                        player.score === 15 && "text-christmas-green"
                       )}>
-                        {player.score}/10
+                        {player.score}/15
                       </span>
                     </td>
                     <td className="p-4 text-center">

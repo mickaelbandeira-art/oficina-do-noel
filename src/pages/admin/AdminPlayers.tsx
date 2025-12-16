@@ -188,7 +188,7 @@ const AdminPlayers = () => {
                     </td>
                     <td className="p-4 text-muted-foreground">{player.matricula}</td>
                     <td className="p-4 text-center">
-                      <span className="font-bold">{player.score}/10</span>
+                      <span className="font-bold">{player.score}/15</span>
                     </td>
                     <td className="p-4 text-center">
                       <div className="flex items-center justify-center gap-1 text-muted-foreground">
