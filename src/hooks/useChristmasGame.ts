@@ -56,7 +56,7 @@ export const useChristmasGame = () => {
 
       // Always use fallback questions for reliability
       // Shuffle them to ensure randomization on every game start
-      const shuffledQuestions = shuffleArray(FALLBACK_QUESTIONS);
+      const shuffledQuestions = shuffleArray(FALLBACK_QUESTIONS).slice(0, 15);
       setQuestions(shuffledQuestions);
       setIsUsingAI(false);
 
