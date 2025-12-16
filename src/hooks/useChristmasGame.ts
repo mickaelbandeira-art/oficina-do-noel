@@ -54,12 +54,17 @@ export const useChristmasGame = () => {
   const fetchQuestions = useCallback(async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from("christmas_questions")
-        .select("*")
-        .eq("is_active", true);
 
-      if (error) throw error;
+      // FORCED FALLBACK: Using local questions to ensure correctness (9 Renas) and randomization
+      // const { data, error } = await supabase
+      //   .from("christmas_questions")
+      //   .select("*")
+      //   .eq("is_active", true);
+
+      // if (error) throw error;
+
+      // Force empty data to trigger fallback logic below
+      const data: Question[] = [];
 
       if (!data || data.length === 0) {
         console.warn("Nenhuma pergunta no banco (fetchQuestions). Usando fallback estático.");
