@@ -79,13 +79,21 @@ const GameQuiz = () => {
 
     if (isLastQuestion) {
       // Submit game
+      setIsSubmitting(true);
+      const totalTime = Math.floor((Date.now() - startTime) / 1000);
+
       try {
-        setIsSubmitting(true);
-        const totalTime = Math.floor((Date.now() - startTime) / 1000);
         const updatedPlayer = await submitGame(player.id, newScore, totalTime, newAnswers);
-
         sessionStorage.setItem("christmasPlayer", JSON.stringify(updatedPlayer));
-
+      } catch (err) {
+        console.error("Erro ao salvar resultado (submitGame):", err);
+        toast({
+          title: "Atenção",
+          description: "Não foi possível salvar online, mas seu resultado será exibido.",
+          variant: "default",
+        });
+      } finally {
+        // ALWAYS save to session and navigate, even if DB fails
         sessionStorage.setItem("christmasResult", JSON.stringify({
           score: newScore,
           totalQuestions: questions.length,
@@ -95,12 +103,6 @@ const GameQuiz = () => {
         }));
 
         navigate("/christmas/result");
-      } catch (err) {
-        toast({
-          title: "Erro",
-          description: "Erro ao salvar resultado. Tente novamente.",
-          variant: "destructive",
-        });
         setIsSubmitting(false);
       }
     } else {

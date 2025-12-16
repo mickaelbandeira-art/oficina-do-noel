@@ -63,7 +63,7 @@ interface FeedbackOverlayProps {
 }
 
 export const FeedbackOverlay = ({ isVisible, isCorrect, correctAnswerText }: FeedbackOverlayProps) => {
-  const [selectedImage, setSelectedImage] = useState<string>("");
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const hasPlayedSound = useRef(false);
 
   useEffect(() => {
@@ -84,12 +84,11 @@ export const FeedbackOverlay = ({ isVisible, isCorrect, correctAnswerText }: Fee
       }
     } else {
       hasPlayedSound.current = false;
-      // Optional: Clear image when hiding to ensure fresh start, 
-      // though unmounting handles this if parent conditionally renders.
+      setSelectedImage(null); // Clear image when hidden
     }
   }, [isVisible, isCorrect]);
 
-  if (!isVisible) return null;
+  if (!isVisible || !selectedImage) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 animate-fade-in">
@@ -104,14 +103,12 @@ export const FeedbackOverlay = ({ isVisible, isCorrect, correctAnswerText }: Fee
           }
         `}
       >
-        {selectedImage && (
-          <img
-            key={selectedImage} // Force re-render if image changes
-            src={selectedImage}
-            alt={isCorrect ? "Resposta correta" : "Resposta incorreta"}
-            className="w-52 h-52 md:w-64 md:h-64 object-contain"
-          />
-        )}
+        <img
+          key={selectedImage} // Force re-render if image changes
+          src={selectedImage}
+          alt={isCorrect ? "Resposta correta" : "Resposta incorreta"}
+          className="w-52 h-52 md:w-64 md:h-64 object-contain"
+        />
 
         <div className="space-y-4">
           <p
