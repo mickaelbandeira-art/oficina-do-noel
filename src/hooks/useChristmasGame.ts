@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { FALLBACK_QUESTIONS } from "@/data/fallbackQuestions";
 
-export const MAX_ATTEMPTS = 4;
+export const MAX_ATTEMPTS = 1;
 
 export interface Question {
   id: string;
