@@ -63,14 +63,14 @@ export const useChristmasGame = () => {
 
       if (!data || data.length === 0) {
         console.warn("Nenhuma pergunta no banco (fetchQuestions). Usando fallback estático.");
-        setQuestions(shuffleArray(FALLBACK_QUESTIONS).slice(0, 10));
+        setQuestions(shuffleArray(FALLBACK_QUESTIONS));
       } else {
-        setQuestions(shuffleArray(data).slice(0, 10));
+        setQuestions(shuffleArray(data));
       }
       setIsUsingAI(false);
     } catch (err) {
       console.error("Erro no fetchQuestions, usando fallback:", err);
-      setQuestions(shuffleArray(FALLBACK_QUESTIONS).slice(0, 10));
+      setQuestions(shuffleArray(FALLBACK_QUESTIONS));
       // setError(err instanceof Error ? err.message : "Erro ao carregar perguntas");
     } finally {
       setLoading(false);
@@ -78,48 +78,54 @@ export const useChristmasGame = () => {
   }, []);
 
   const fetchAIQuestions = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
+    // Disable AI - force fallback behavior
+    return fetchQuestions();
+  }, [fetchQuestions]);
 
-      console.log("Gerando perguntas com IA...");
-      const aiQuestions = await generateQuizQuestions();
-
-      setQuestions(aiQuestions);
-      setIsUsingAI(true);
-      console.log("Perguntas geradas com sucesso!");
-    } catch (err) {
-      console.error("Erro ao gerar perguntas com IA, usando banco de dados:", err);
-      // setError(null); // Ensure error is clear for fallback
-
-
-      // Fallback para perguntas do banco
+  /*
       try {
-        const { data, error: dbError } = await supabase
-          .from("christmas_questions")
-          .select("*")
-          .eq("is_active", true);
-
-        if (dbError) throw dbError;
-
-        if (!data || data.length === 0) {
-          console.warn("Nenhuma pergunta no banco. Usando fallback estático.");
+        setLoading(true);
+        setError(null);
+  
+        console.log("Gerando perguntas com IA...");
+        const aiQuestions = await generateQuizQuestions();
+  
+        setQuestions(aiQuestions);
+        setIsUsingAI(true);
+        console.log("Perguntas geradas com sucesso!");
+      } catch (err) {
+        console.error("Erro ao gerar perguntas com IA, usando banco de dados:", err);
+        // setError(null); // Ensure error is clear for fallback
+  
+  
+        // Fallback para perguntas do banco
+        try {
+          const { data, error: dbError } = await supabase
+            .from("christmas_questions")
+            .select("*")
+            .eq("is_active", true);
+  
+          if (dbError) throw dbError;
+  
+          if (!data || data.length === 0) {
+            console.warn("Nenhuma pergunta no banco. Usando fallback estático.");
+            setQuestions(shuffleArray(FALLBACK_QUESTIONS).slice(0, 10));
+          } else {
+            setQuestions(shuffleArray(data).slice(0, 10));
+          }
+          setIsUsingAI(false);
+        } catch (dbErr) {
+          console.error("Erro no banco, usando fallback final:", dbErr);
           setQuestions(shuffleArray(FALLBACK_QUESTIONS).slice(0, 10));
-        } else {
-          setQuestions(shuffleArray(data).slice(0, 10));
+          setIsUsingAI(false);
+          // Não setar erro para o usuário se o fallback funcionar
+          // setError(dbErr instanceof Error ? dbErr.message : "Erro ao carregar perguntas");
         }
-        setIsUsingAI(false);
-      } catch (dbErr) {
-        console.error("Erro no banco, usando fallback final:", dbErr);
-        setQuestions(shuffleArray(FALLBACK_QUESTIONS).slice(0, 10));
-        setIsUsingAI(false);
-        // Não setar erro para o usuário se o fallback funcionar
-        // setError(dbErr instanceof Error ? dbErr.message : "Erro ao carregar perguntas");
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    }, []);
+  */
 
   useEffect(() => {
     fetchQuestions();

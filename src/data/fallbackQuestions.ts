@@ -194,7 +194,7 @@ export const FALLBACK_QUESTIONS = [
         question: "Quantas renas puxam o trenó do Papai Noel?",
         option_a: "6",
         option_b: "8",
-        option_c: "9",
+        option_c: "9 Renas",
         option_d: "10",
         correct_answer: "C",
         order_index: 0

@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 const GameQuiz = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { questions, loading, error, isUsingAI, submitGame, fetchAIQuestions } = useChristmasGame();
+  const { questions, loading, error, isUsingAI, submitGame } = useChristmasGame();
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
@@ -33,13 +33,6 @@ const GameQuiz = () => {
     }
   }, [player, navigate]);
 
-  // Load AI questions on mount
-  useEffect(() => {
-    if (player?.id && fetchAIQuestions) {
-      fetchAIQuestions();
-    }
-  }, [player?.id, fetchAIQuestions]);
-
   // Timer
   useEffect(() => {
     const interval = setInterval(() => {
@@ -56,6 +49,13 @@ const GameQuiz = () => {
 
   const currentQuestion = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
+
+  const options = [
+    { key: "A", value: currentQuestion?.option_a },
+    { key: "B", value: currentQuestion?.option_b },
+    { key: "C", value: currentQuestion?.option_c },
+    { key: "D", value: currentQuestion?.option_d },
+  ];
 
   const handleAnswer = (answer: string) => {
     if (showResult || isSubmitting) return;
@@ -75,7 +75,7 @@ const GameQuiz = () => {
     setShowResult(true);
 
     // Wait for animation
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 3000)); // Increased time to read feedback
 
     if (isLastQuestion) {
       // Submit game
@@ -116,8 +116,7 @@ const GameQuiz = () => {
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center text-white">
             <div className="animate-spin w-12 h-12 border-4 border-christmas-gold border-t-transparent rounded-full mx-auto mb-4" />
-            <p className="text-xl">Gerando perguntas exclusivas para você...</p>
-            <p className="text-sm text-white/70 mt-2">Powered by AI 🤖</p>
+            <p className="text-xl">Preparando suas perguntas...</p>
           </div>
         </div>
       </ChristmasLayout>
@@ -139,17 +138,17 @@ const GameQuiz = () => {
     );
   }
 
-  const options = [
-    { key: "A", value: currentQuestion?.option_a },
-    { key: "B", value: currentQuestion?.option_b },
-    { key: "C", value: currentQuestion?.option_c },
-    { key: "D", value: currentQuestion?.option_d },
-  ];
+  // Calculate correct answer text for feedback
+  const correctOption = options.find(o => o.key === currentQuestion?.correct_answer);
 
   return (
     <ChristmasLayout showDecorations={false}>
       {/* Feedback Overlay */}
-      <FeedbackOverlay isVisible={showResult} isCorrect={lastAnswerCorrect} />
+      <FeedbackOverlay
+        isVisible={showResult}
+        isCorrect={lastAnswerCorrect}
+        correctAnswerText={correctOption?.value}
+      />
 
       <div className="min-h-screen flex flex-col px-4 py-6">
         {/* Header */}
